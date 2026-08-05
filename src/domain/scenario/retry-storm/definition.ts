@@ -26,8 +26,11 @@ export const retryStormDefinition: ScenarioDefinition = {
   actions: scenarioData.actions,
   concepts: scenarioData.concepts,
   content: {
+    startMinute: 0,
     durationMinutes: 8,
     difficulty: "Beginner",
+    impact: { metricId: "openConnections", growingAt: 75, highAt: 90, severeFlag: "trafficPaused" },
+    topologyNote: "Connections pulse as retry traffic rises",
     briefing: {
       eyebrow: "Incident briefing",
       title: "A small timeout becomes a system-wide problem.",
@@ -40,6 +43,7 @@ export const retryStormDefinition: ScenarioDefinition = {
       rootCauseTitle: "Retry amplification",
       rootCauseDescription: "The payment provider returned intermittent timeouts. The payment service retried without exponential backoff or jitter, multiplying traffic and consuming connection pools.",
       bestIntervention: "Before connections exceed 90%",
+      missedOpportunities: [{ flag: "retriesDisabled", label: "Disable automatic retries" }, { flag: "circuitBreakerEnabled", label: "Enable circuit breaker" }, { flag: "providerTracesInspected", label: "Inspect provider traces" }],
     },
     outcomeMessages: {
       "excellent-containment": { eyebrow: "Excellent containment", title: "The chain was interrupted.", body: "You stopped retry amplification, isolated the unstable dependency, and preserved the rest of checkout.", tone: "text-emerald-300" },

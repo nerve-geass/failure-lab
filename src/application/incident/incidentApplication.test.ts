@@ -27,6 +27,27 @@ describe("incident application", () => {
     expect(persistence.value?.completedActionIds).toContain("inspect-deployment");
   });
 
+  it("starts the selected Cache Stampede scenario", () => {
+    const persistence = memoryPersistence();
+    const application = createIncidentApplication(persistence, scenarioRegistry);
+
+    const started = application.startIncident("cache-stampede");
+
+    expect(started.scenarioId).toBe("cache-stampede");
+    expect(started.metrics.cacheHitRate.value).toBe(71);
+    expect(persistence.value?.scenarioId).toBe("cache-stampede");
+  });
+
+  it("restores and restarts Cache Stampede by scenario ID", () => {
+    const persistence = memoryPersistence();
+    const application = createIncidentApplication(persistence, scenarioRegistry);
+    const started = application.startIncident("cache-stampede");
+    application.performIncidentAction(started, "inspect-cache-metrics");
+
+    expect(application.restoreIncident()?.scenarioId).toBe("cache-stampede");
+    expect(application.restartIncident("cache-stampede").scenarioId).toBe("cache-stampede");
+  });
+
   it("restores a snapshot and resets it through restart", () => {
     const persistence = memoryPersistence();
     const application = createIncidentApplication(persistence, scenarioRegistry);

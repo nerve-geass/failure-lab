@@ -1,8 +1,11 @@
 import type { Connection, IncidentAction, IncidentEvent, IncidentState, Metric, NodeStatus, OutcomeId, SystemNode } from "@/domain/incident/types";
 
 export type ScenarioContent = {
+  startMinute: number;
   durationMinutes: number;
   difficulty: string;
+  impact: { metricId: string; growingAt: number; highAt: number; severeFlag?: string };
+  topologyNote: string;
   briefing: {
     eyebrow: string;
     title: string;
@@ -15,6 +18,7 @@ export type ScenarioContent = {
     rootCauseTitle: string;
     rootCauseDescription: string;
     bestIntervention: string;
+    missedOpportunities: { flag: string; label: string }[];
   };
   outcomeMessages: Partial<Record<OutcomeId, { eyebrow: string; title: string; body: string; tone: string }>>;
 };

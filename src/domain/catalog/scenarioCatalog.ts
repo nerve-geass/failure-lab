@@ -17,7 +17,7 @@ export const scenarioCatalog: ScenarioCatalogEntry[] = [
     title: "Cache Stampede",
     order: 2,
     difficulty: "Beginner",
-    status: "planned",
+    status: "available",
     summary: "A popular cache key expires and a wave of requests hits the database at once.",
     estimatedMinutes: 8,
     prerequisites: ["retry-storm"],

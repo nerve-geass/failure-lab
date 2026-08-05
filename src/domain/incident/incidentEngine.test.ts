@@ -14,7 +14,7 @@ const scenario: ScenarioDefinition = {
   connections: [],
   actions: [action],
   concepts: [],
-  content: { durationMinutes: 5, difficulty: "Introductory", briefing: { eyebrow: "Synthetic", title: "Synthetic", description: "Synthetic", objective: "Synthetic", capability: "Synthetic", learning: "Synthetic" }, report: { rootCauseTitle: "Synthetic", rootCauseDescription: "Synthetic", bestIntervention: "Immediately" }, outcomeMessages: {} },
+  content: { startMinute: 0, durationMinutes: 5, difficulty: "Introductory", impact: { metricId: "", growingAt: 1, highAt: 2 }, topologyNote: "Synthetic signals", briefing: { eyebrow: "Synthetic", title: "Synthetic", description: "Synthetic", objective: "Synthetic", capability: "Synthetic", learning: "Synthetic" }, report: { rootCauseTitle: "Synthetic", rootCauseDescription: "Synthetic", bestIntervention: "Immediately", missedOpportunities: [] }, outcomeMessages: {} },
   createInitialState: () => ({ scenarioId: "synthetic-engine", currentMinute: 0, actionPoints: 2, flags: {}, metrics: {}, nodeStatuses: {}, completedActionIds: [], hypotheses: [], timeline: [], status: "active" }),
   resolveAction: () => ({ flags: { mitigated: true }, hypotheses: ["Synthetic cause"], events: [event], message: "Pressure drops." }),
   deriveState: (state: IncidentState) => ({ metrics: state.metrics, nodeStatuses: state.nodeStatuses }),

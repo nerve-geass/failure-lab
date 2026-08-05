@@ -18,7 +18,7 @@ describe("learning scenario catalog", () => {
   });
 
   it("marks only implemented scenarios as available", () => {
-    expect(scenarioCatalog.filter((scenario) => scenario.status === "available").map((scenario) => scenario.id)).toEqual(["retry-storm"]);
-    expect(scenarioCatalog.filter((scenario) => scenario.status === "planned")).toHaveLength(9);
+    expect(scenarioCatalog.filter((scenario) => scenario.status === "available").map((scenario) => scenario.id)).toEqual(["retry-storm", "cache-stampede"]);
+    expect(scenarioCatalog.filter((scenario) => scenario.status === "planned")).toHaveLength(8);
   });
 });

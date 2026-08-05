@@ -12,10 +12,11 @@ export function App() {
   const enterIncident = useIncidentStore((state) => state.enterIncident);
   const goToLanding = useIncidentStore((state) => state.goToLanding);
   const scenario = useIncidentStore((state) => state.scenario);
+  const selectScenario = useIncidentStore((state) => state.selectScenario);
 
   useEffect(() => { restore(); }, [restore]);
 
-  if (screen === "landing") return <LandingPage scenario={scenario} onStart={startInvestigation} />;
+  if (screen === "landing") return <LandingPage scenario={scenario} onStart={startInvestigation} onSelectScenario={selectScenario} />;
   if (screen === "briefing") return <BriefingPage scenario={scenario} onEnter={enterIncident} onBack={goToLanding} />;
   if (screen === "incident") return <IncidentWorkspace />;
   return <AutopsyReport />;

@@ -10,7 +10,7 @@ const syntheticScenario: ScenarioDefinition = {
   connections: [],
   actions: [],
   concepts: [],
-  content: { durationMinutes: 5, difficulty: "Introductory", briefing: { eyebrow: "Synthetic", title: "Synthetic briefing", description: "Synthetic description.", objective: "Synthetic objective.", capability: "Synthetic capability.", learning: "Synthetic learning." }, report: { rootCauseTitle: "Synthetic cause", rootCauseDescription: "Synthetic root cause.", bestIntervention: "Immediately" }, outcomeMessages: {} },
+  content: { startMinute: 0, durationMinutes: 5, difficulty: "Introductory", impact: { metricId: "", growingAt: 1, highAt: 2 }, topologyNote: "Synthetic signals", briefing: { eyebrow: "Synthetic", title: "Synthetic briefing", description: "Synthetic description.", objective: "Synthetic objective.", capability: "Synthetic capability.", learning: "Synthetic learning." }, report: { rootCauseTitle: "Synthetic cause", rootCauseDescription: "Synthetic root cause.", bestIntervention: "Immediately", missedOpportunities: [] }, outcomeMessages: {} },
   createInitialState: () => ({
     scenarioId: "synthetic",
     currentMinute: 0,
@@ -39,6 +39,7 @@ describe("scenario registry", () => {
 
   it("exposes the application registry object", () => {
     expect(scenarioRegistry).toBeDefined();
+    expect(listScenarios(scenarioRegistry).map((scenario) => scenario.id)).toEqual(["retry-storm", "cache-stampede"]);
   });
 
   it("keeps scenario narrative content with the definition", () => {
