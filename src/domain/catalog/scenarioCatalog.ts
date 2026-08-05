@@ -28,7 +28,7 @@ export const scenarioCatalog: ScenarioCatalogEntry[] = [
     title: "Queue Consumer Lag",
     order: 3,
     difficulty: "Beginner",
-    status: "planned",
+    status: "available",
     summary: "Message arrival outpaces consumers and operational delay quietly compounds.",
     estimatedMinutes: 9,
     prerequisites: ["retry-storm"],

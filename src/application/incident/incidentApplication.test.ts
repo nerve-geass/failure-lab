@@ -48,6 +48,16 @@ describe("incident application", () => {
     expect(application.restartIncident("cache-stampede").scenarioId).toBe("cache-stampede");
   });
 
+  it("starts Queue Consumer Lag by scenario ID", () => {
+    const persistence = memoryPersistence();
+    const application = createIncidentApplication(persistence, scenarioRegistry);
+
+    const started = application.startIncident("queue-consumer-lag");
+
+    expect(started.scenarioId).toBe("queue-consumer-lag");
+    expect(started.metrics.queueDepth.value).toBe(4200);
+  });
+
   it("restores a snapshot and resets it through restart", () => {
     const persistence = memoryPersistence();
     const application = createIncidentApplication(persistence, scenarioRegistry);
