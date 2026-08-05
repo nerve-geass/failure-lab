@@ -1,0 +1,8 @@
+import { motion } from "framer-motion";
+import { fadeUp } from "../shared/motion";
+import { useIncidentStore } from "@/application/incident/incidentStore";
+import { Panel, SectionHeading, SeverityText } from "../shared/ui";
+
+function clockLabel(minute: number) { const total = 9 * 60 + 42 + minute; return `${String(Math.floor(total / 60)).padStart(2, "0")}:${String(total % 60).padStart(2, "0")}`; }
+
+export function IncidentTimeline() { const events = useIncidentStore((state) => state.incident.timeline); return <Panel className="p-5"><SectionHeading eyebrow="Sequence of events" title="Incident timeline" action={<span className="text-xs text-slate-600">{events.length} events</span>} /><div className="relative ml-2 space-y-1 border-l border-white/10 pl-6">{events.slice().reverse().map((event) => <motion.article key={event.id} variants={fadeUp} initial="hidden" animate="visible" className="relative rounded-xl border border-white/[0.06] bg-white/[0.02] p-4"><span className="absolute -left-[31px] top-5 h-2.5 w-2.5 rounded-full border-2 border-[#10151d] bg-cyan-200" /><div className="flex flex-wrap items-center justify-between gap-2"><div className="flex items-center gap-3"><time className="font-mono text-xs text-cyan-200">{clockLabel(event.minute)}</time><SeverityText severity={event.severity} /></div><span className="text-[10px] uppercase tracking-[0.14em] text-slate-600">{event.relatedNodeIds.length ? event.relatedNodeIds.join(" · ") : "system"}</span></div><h3 className="mt-2 text-sm font-semibold text-slate-200">{event.title}</h3><p className="mt-1 text-xs leading-5 text-slate-400">{event.description}</p></motion.article>)}</div></Panel>; }

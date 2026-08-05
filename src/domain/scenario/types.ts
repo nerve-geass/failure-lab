@@ -1,0 +1,48 @@
+import type { Connection, IncidentAction, IncidentEvent, IncidentState, Metric, NodeStatus, OutcomeId, SystemNode } from "@/domain/incident/types";
+
+export type ScenarioContent = {
+  durationMinutes: number;
+  difficulty: string;
+  briefing: {
+    eyebrow: string;
+    title: string;
+    description: string;
+    objective: string;
+    capability: string;
+    learning: string;
+  };
+  report: {
+    rootCauseTitle: string;
+    rootCauseDescription: string;
+    bestIntervention: string;
+  };
+  outcomeMessages: Partial<Record<OutcomeId, { eyebrow: string; title: string; body: string; tone: string }>>;
+};
+
+export type ScenarioActionEffect = {
+  flags: Record<string, boolean>;
+  hypotheses: string[];
+  events: IncidentEvent[];
+  message?: string;
+};
+
+export type DerivedIncidentState = {
+  metrics: Record<string, Metric>;
+  nodeStatuses: Record<string, NodeStatus>;
+};
+
+export type ScenarioDefinition = {
+  id: string;
+  title: string;
+  summary: string;
+  nodes: Record<string, SystemNode>;
+  connections: Connection[];
+  actions: IncidentAction[];
+  concepts: string[];
+  content: ScenarioContent;
+  createInitialState(): IncidentState;
+  resolveAction(state: IncidentState, action: IncidentAction): ScenarioActionEffect;
+  deriveState(state: IncidentState): DerivedIncidentState;
+  calculateOutcome(state: IncidentState): OutcomeId | undefined;
+  calculateScore(state: IncidentState): number;
+};
