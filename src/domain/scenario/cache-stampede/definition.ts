@@ -14,6 +14,7 @@ export const cacheStampedeDefinition: ScenarioDefinition = {
   connections,
   actions,
   concepts: ["TTL", "Cache warming", "Request coalescing", "Database load", "Backpressure", "Graceful degradation"],
+  prerequisitePolicy: "hard",
   content: {
     startMinute: 34,
     durationMinutes: 8,

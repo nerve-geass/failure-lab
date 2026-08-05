@@ -25,6 +25,7 @@ export const retryStormDefinition: ScenarioDefinition = {
   connections: scenarioData.connections,
   actions: scenarioData.actions,
   concepts: scenarioData.concepts,
+  prerequisitePolicy: "hard",
   content: {
     startMinute: 0,
     durationMinutes: 8,

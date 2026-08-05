@@ -47,4 +47,22 @@ describe("generic incident engine", () => {
     expect(second.accepted).toBe(false);
     expect(second.state).toEqual(first.state);
   });
+
+  it("allows soft-prerequisite actions and tells the scenario evidence was missing", () => {
+    const riskyAction: IncidentAction = { id: "risky", title: "Try risky mitigation", description: "", consequence: "", actionPointCost: 1, timeCostMinutes: 2, prerequisites: ["inspect-signal"] };
+    const softScenario: ScenarioDefinition = {
+      ...scenario,
+      id: "soft-engine-scenario",
+      prerequisitePolicy: "soft",
+      actions: [riskyAction],
+      createInitialState: () => ({ ...scenario.createInitialState(), scenarioId: "soft-engine-scenario" }),
+      resolveAction: (_state, _action, context) => ({ flags: { attemptedWithoutEvidence: !context.prerequisitesMet }, hypotheses: [], events: [], message: context.prerequisitesMet ? "Mitigation applied." : "You acted without enough evidence." }),
+    };
+
+    const result = applyIncidentAction(softScenario.createInitialState(), softScenario, "risky");
+
+    expect(result.accepted).toBe(true);
+    expect(result.state.flags.attemptedWithoutEvidence).toBe(true);
+    expect(result.message).toBe("You acted without enough evidence.");
+  });
 });

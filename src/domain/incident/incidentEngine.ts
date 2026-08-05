@@ -9,12 +9,14 @@ export function applyIncidentAction(state: IncidentState, scenario: ScenarioDefi
   const action = scenario.actions.find((candidate) => candidate.id === actionId);
   if (!action) return { state, action: { id: actionId, title: "Unknown action", description: "", consequence: "", actionPointCost: 0, timeCostMinutes: 0 }, accepted: false, message: "Action not found." };
   const prerequisites = action.prerequisites ?? [];
+  const missingPrerequisites = prerequisites.filter((prerequisite) => !state.completedActionIds.includes(prerequisite));
   const hasPrerequisites = action.prerequisiteMode === "any"
     ? prerequisites.some((prerequisite) => state.completedActionIds.includes(prerequisite))
     : prerequisites.every((prerequisite) => state.completedActionIds.includes(prerequisite));
+  const prerequisitesAreHard = (scenario.prerequisitePolicy ?? "hard") === "hard";
   const alreadyCompleted = !action.repeatable && state.completedActionIds.includes(action.id);
   const affordable = state.actionPoints >= action.actionPointCost;
-  if (state.status !== "active" || !hasPrerequisites || alreadyCompleted || !affordable) {
+  if (state.status !== "active" || (prerequisitesAreHard && !hasPrerequisites) || alreadyCompleted || !affordable) {
     const message = state.status !== "active" ? "The incident is no longer active." : alreadyCompleted ? "This action is already complete." : !hasPrerequisites ? "Inspect a relevant signal first." : "Not enough action points.";
     return { state, action, accepted: false, message };
   }
@@ -25,7 +27,7 @@ export function applyIncidentAction(state: IncidentState, scenario: ScenarioDefi
     actionPoints: state.actionPoints - action.actionPointCost,
     completedActionIds: [...state.completedActionIds, action.id],
   };
-  const effect = scenario.resolveAction(nextBase, action);
+  const effect = scenario.resolveAction(nextBase, action, { prerequisitesMet: hasPrerequisites, missingPrerequisites });
   const withEffects: IncidentState = {
     ...nextBase,
     flags: { ...nextBase.flags, ...effect.flags },

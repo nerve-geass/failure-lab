@@ -12,7 +12,7 @@ const applyIncidentAction = (state: ReturnType<typeof createRetryStormIncident>,
 describe("Retry Storm initial incident", () => {
   it("exposes Retry Storm through the generic scenario contract", () => {
     const state = retryStormDefinition.createInitialState();
-    const result = retryStormDefinition.resolveAction(state, retryStormDefinition.actions.find((action) => action.id === "disable-retries")!);
+    const result = retryStormDefinition.resolveAction(state, retryStormDefinition.actions.find((action) => action.id === "disable-retries")!, { prerequisitesMet: true, missingPrerequisites: [] });
 
     expect(state.scenarioId).toBe("retry-storm");
     expect(result.flags.retriesDisabled).toBe(true);

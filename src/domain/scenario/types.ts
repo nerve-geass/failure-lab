@@ -30,6 +30,11 @@ export type ScenarioActionEffect = {
   message?: string;
 };
 
+export type ScenarioActionContext = {
+  prerequisitesMet: boolean;
+  missingPrerequisites: string[];
+};
+
 export type DerivedIncidentState = {
   metrics: Record<string, Metric>;
   nodeStatuses: Record<string, NodeStatus>;
@@ -44,8 +49,9 @@ export type ScenarioDefinition = {
   actions: IncidentAction[];
   concepts: string[];
   content: ScenarioContent;
+  prerequisitePolicy?: "hard" | "soft";
   createInitialState(): IncidentState;
-  resolveAction(state: IncidentState, action: IncidentAction): ScenarioActionEffect;
+  resolveAction(state: IncidentState, action: IncidentAction, context: ScenarioActionContext): ScenarioActionEffect;
   deriveState(state: IncidentState): DerivedIncidentState;
   calculateOutcome(state: IncidentState): OutcomeId | undefined;
   calculateScore(state: IncidentState): number;
