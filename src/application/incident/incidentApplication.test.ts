@@ -58,6 +58,16 @@ describe("incident application", () => {
     expect(started.metrics.queueDepth.value).toBe(4200);
   });
 
+  it("starts Connection Pool Exhaustion by scenario ID", () => {
+    const persistence = memoryPersistence();
+    const application = createIncidentApplication(persistence, scenarioRegistry);
+
+    const started = application.startIncident("connection-pool-exhaustion");
+
+    expect(started.scenarioId).toBe("connection-pool-exhaustion");
+    expect(started.metrics.poolUtilization.value).toBe(74);
+  });
+
   it("restores a snapshot and resets it through restart", () => {
     const persistence = memoryPersistence();
     const application = createIncidentApplication(persistence, scenarioRegistry);

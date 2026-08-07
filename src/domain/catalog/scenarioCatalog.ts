@@ -39,7 +39,7 @@ export const scenarioCatalog: ScenarioCatalogEntry[] = [
     title: "Connection Pool Exhaustion",
     order: 4,
     difficulty: "Intermediate",
-    status: "planned",
+    status: "available",
     summary: "Slow queries and unreleased connections starve otherwise healthy application workers.",
     estimatedMinutes: 10,
     prerequisites: ["queue-consumer-lag"],

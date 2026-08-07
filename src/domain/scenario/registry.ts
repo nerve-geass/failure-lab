@@ -1,5 +1,6 @@
 import type { ScenarioDefinition } from "./types";
 import { cacheStampedeDefinition } from "./cache-stampede/definition";
+import { connectionPoolExhaustionDefinition } from "./connection-pool-exhaustion/definition";
 import { queueConsumerLagDefinition } from "./queue-consumer-lag/definition";
 import { retryStormDefinition } from "./retry-storm/definition";
 
@@ -9,6 +10,7 @@ export const scenarioRegistry: ScenarioRegistry = {
   [retryStormDefinition.id]: retryStormDefinition,
   [cacheStampedeDefinition.id]: cacheStampedeDefinition,
   [queueConsumerLagDefinition.id]: queueConsumerLagDefinition,
+  [connectionPoolExhaustionDefinition.id]: connectionPoolExhaustionDefinition,
 };
 
 export function getScenario(registry: ScenarioRegistry, id: string): ScenarioDefinition | undefined {
