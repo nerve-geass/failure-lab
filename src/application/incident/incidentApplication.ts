@@ -32,5 +32,8 @@ export function createIncidentApplication(persistence: IncidentPersistence, regi
       persistence.clear();
       return this.startIncident(scenarioId);
     },
+    abandonIncident(): void {
+      persistence.clear();
+    },
   };
 }

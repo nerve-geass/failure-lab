@@ -21,14 +21,44 @@ export const cacheStampedeNodeIds = {
 
 const metric = (id: string, label: string, value: number, unit: string, severity: Metric["severity"], explanation: string): Metric => ({ id, label, value, unit, trend: "flat", severity, explanation });
 
-export const initialMetrics: Record<string, Metric> = {
-  [cacheStampedeMetricIds.cacheHitRate]: metric(cacheStampedeMetricIds.cacheHitRate, "Cache hit rate", 71, "%", "warning", "A popular key is missing more often than expected."),
-  [cacheStampedeMetricIds.databaseLatency]: metric(cacheStampedeMetricIds.databaseLatency, "Database query latency", 180, "ms", "warning", "The database is absorbing the cache misses."),
-  [cacheStampedeMetricIds.databaseConnections]: metric(cacheStampedeMetricIds.databaseConnections, "Database connections", 62, "%", "warning", "Shared database capacity is the main risk."),
-  [cacheStampedeMetricIds.checkoutLatency]: metric(cacheStampedeMetricIds.checkoutLatency, "Checkout latency p95", 1.6, "s", "warning", "Customer latency is rising but has not yet spread everywhere."),
-  [cacheStampedeMetricIds.requestRate]: metric(cacheStampedeMetricIds.requestRate, "Catalog request rate", 4800, "/min", "info", "Traffic volume is normal for this time of day."),
-  [cacheStampedeMetricIds.cacheMisses]: metric(cacheStampedeMetricIds.cacheMisses, "Cache misses", 1390, "/min", "critical", "Misses are concentrated on one popular product key."),
+export type CacheStampedeParameters = {
+  startMinute: number;
+  cacheHitRate: number;
+  databaseLatency: number;
+  databaseConnections: number;
+  requestRate: number;
+  cacheMisses: number;
+  pressureMultiplier: number;
 };
+
+export type CacheStampedeRuntime = {
+  parameters: CacheStampedeParameters;
+  initialMetrics: Record<string, Metric>;
+};
+
+export const defaultParameters: CacheStampedeParameters = {
+  startMinute: 34,
+  cacheHitRate: 71,
+  databaseLatency: 180,
+  databaseConnections: 62,
+  requestRate: 4800,
+  cacheMisses: 1390,
+  pressureMultiplier: 8,
+};
+
+export function createInitialMetrics(parameters: CacheStampedeParameters = defaultParameters): Record<string, Metric> {
+  return {
+    [cacheStampedeMetricIds.cacheHitRate]: metric(cacheStampedeMetricIds.cacheHitRate, "Cache hit rate", parameters.cacheHitRate, "%", "warning", "A popular key is missing more often than expected."),
+    [cacheStampedeMetricIds.databaseLatency]: metric(cacheStampedeMetricIds.databaseLatency, "Database query latency", parameters.databaseLatency, "ms", "warning", "The database is absorbing the cache misses."),
+    [cacheStampedeMetricIds.databaseConnections]: metric(cacheStampedeMetricIds.databaseConnections, "Database connections", parameters.databaseConnections, "%", "warning", "Shared database capacity is the main risk."),
+    [cacheStampedeMetricIds.checkoutLatency]: metric(cacheStampedeMetricIds.checkoutLatency, "Checkout latency p95", 1.6, "s", "warning", "Customer latency is rising but has not yet spread everywhere."),
+    [cacheStampedeMetricIds.requestRate]: metric(cacheStampedeMetricIds.requestRate, "Catalog request rate", parameters.requestRate, "/min", "info", "Traffic volume is normal for this time of day."),
+    [cacheStampedeMetricIds.cacheMisses]: metric(cacheStampedeMetricIds.cacheMisses, "Cache misses", parameters.cacheMisses, "/min", "critical", "Misses are concentrated on one popular product key."),
+  };
+}
+
+export const initialMetrics = createInitialMetrics();
+export const defaultRuntime: CacheStampedeRuntime = { parameters: defaultParameters, initialMetrics };
 
 export const nodes: Record<string, SystemNode> = {
   [cacheStampedeNodeIds.webCheckout]: { id: cacheStampedeNodeIds.webCheckout, name: "Web Checkout", description: "Customer-facing shopping flow." },

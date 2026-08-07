@@ -79,6 +79,16 @@ describe("incident application", () => {
     expect(persistence.value?.completedActionIds).toEqual([]);
   });
 
+  it("clears the persisted incident when it is abandoned", () => {
+    const persistence = memoryPersistence();
+    const application = createIncidentApplication(persistence, scenarioRegistry);
+    application.startIncident("cache-stampede");
+
+    application.abandonIncident();
+
+    expect(application.restoreIncident()).toBeNull();
+  });
+
   it("migrates a legacy snapshot without scenarioId to Retry Storm", () => {
     const persistence = memoryPersistence();
     const legacy = createInitialIncident(retryStormDefinition) as Omit<ReturnType<typeof createInitialIncident>, "scenarioId"> & { scenarioId?: string };

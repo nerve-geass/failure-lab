@@ -1,13 +1,17 @@
 import type { ScenarioDefinition } from "../types";
 import { calculateCacheStampedeScore } from "./calculateScore";
-import { actions, connections, initialEvent, initialMetrics, initialStatuses, nodes } from "./data";
+import { actions, connections, createInitialMetrics, defaultParameters, initialEvent, initialStatuses, nodes } from "./data";
 import { calculateCacheStampedeOutcome } from "./calculateOutcome";
 import { deriveCacheStampedeState, resolveCacheStampedeAction } from "./rules";
 
 const initialFlags = { cacheMetricsInspected: false, deploymentInspected: false, databaseMetricsInspected: false, cacheWarmed: false, requestCoalescingEnabled: false, trafficThrottled: false, rollbackApplied: false };
 
-export const cacheStampedeDefinition: ScenarioDefinition = {
+export function createCacheStampedeDefinition(parameters = defaultParameters, seed?: number): ScenarioDefinition {
+  const initialMetrics = createInitialMetrics(parameters);
+
+  return {
   id: "cache-stampede",
+  seed,
   title: "Cache Stampede",
   summary: "A popular cache key expires and a wave of requests hits the database at once.",
   nodes,
@@ -16,7 +20,7 @@ export const cacheStampedeDefinition: ScenarioDefinition = {
   concepts: ["TTL", "Cache warming", "Request coalescing", "Database load", "Backpressure", "Graceful degradation"],
   prerequisitePolicy: "hard",
   content: {
-    startMinute: 34,
+    startMinute: parameters.startMinute,
     durationMinutes: 8,
     difficulty: "Beginner",
     impact: { metricId: "databaseConnections", growingAt: 75, highAt: 90, severeFlag: "trafficThrottled" },
@@ -31,8 +35,11 @@ export const cacheStampedeDefinition: ScenarioDefinition = {
     },
   },
   createInitialState: () => ({ scenarioId: "cache-stampede", currentMinute: 0, actionPoints: 6, flags: { ...initialFlags }, metrics: structuredClone(initialMetrics), nodeStatuses: { ...initialStatuses }, completedActionIds: [], hypotheses: [], timeline: [structuredClone(initialEvent)], status: "active" }),
-  resolveAction: resolveCacheStampedeAction,
-  deriveState: deriveCacheStampedeState,
+  resolveAction: (state, action) => resolveCacheStampedeAction(state, action, { parameters, initialMetrics }),
+  deriveState: (state) => deriveCacheStampedeState(state, { parameters, initialMetrics }),
   calculateOutcome: calculateCacheStampedeOutcome,
   calculateScore: calculateCacheStampedeScore,
 };
+}
+
+export const cacheStampedeDefinition: ScenarioDefinition = createCacheStampedeDefinition();

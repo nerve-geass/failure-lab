@@ -13,12 +13,15 @@ type Toast = { message: string; tone: "info" | "success" | "warning" } | null;
 
 export type IncidentStore = {
   screen: AppScreen;
+  hasSavedIncident: boolean;
   incident: IncidentState;
   scenario: ScenarioDefinition;
   selectedNodeId: string | null;
   pendingActionId: string | null;
   toast: Toast;
   startInvestigation: () => void;
+  resumeInvestigation: () => void;
+  abandonInvestigation: () => void;
   enterIncident: () => void;
   requestAction: (actionId: string) => void;
   confirmAction: () => void;
@@ -40,12 +43,18 @@ export function createIncidentStore(persistence: IncidentPersistence = defaultPe
   if (!defaultScenario) throw new Error("Retry Storm scenario is not registered.");
   return create<IncidentStore>((set, get) => ({
     screen: "landing",
+    hasSavedIncident: false,
     incident: createInitialIncident(defaultScenario),
     scenario: defaultScenario,
     selectedNodeId: null,
     pendingActionId: null,
     toast: null,
-    startInvestigation: () => set({ screen: "briefing", incident: application.startIncident(get().scenario.id), toast: null }),
+    startInvestigation: () => set({ screen: "briefing", hasSavedIncident: true, incident: application.startIncident(get().scenario.id), toast: null }),
+    resumeInvestigation: () => set({ screen: get().incident.status === "resolved" || get().incident.status === "failed" ? "report" : "incident", toast: null }),
+    abandonInvestigation: () => {
+      application.abandonIncident();
+      set({ screen: "landing", hasSavedIncident: false, incident: createInitialIncident(defaultScenario), scenario: defaultScenario, pendingActionId: null, selectedNodeId: null, toast: null });
+    },
     enterIncident: () => set({ screen: "incident" }),
     requestAction: (actionId) => set({ pendingActionId: actionId }),
     confirmAction: () => {
@@ -60,13 +69,13 @@ export function createIncidentStore(persistence: IncidentPersistence = defaultPe
       });
     },
     cancelAction: () => set({ pendingActionId: null }),
-    restart: () => set({ screen: "briefing", incident: application.restartIncident(get().scenario.id), pendingActionId: null, selectedNodeId: null, toast: null }),
+    restart: () => set({ screen: "briefing", hasSavedIncident: true, incident: application.restartIncident(get().scenario.id), pendingActionId: null, selectedNodeId: null, toast: null }),
     goToLanding: () => set({ screen: "landing", pendingActionId: null, selectedNodeId: null, toast: null }),
-    selectScenario: (scenarioId) => { const scenario = getScenario(scenarioRegistry, scenarioId); if (scenario) set({ scenario, incident: scenario.createInitialState(), screen: "briefing", toast: null }); },
+    selectScenario: (scenarioId) => { const scenario = getScenario(scenarioRegistry, scenarioId); if (scenario) { application.abandonIncident(); set({ scenario, incident: scenario.createInitialState(), hasSavedIncident: false, screen: "briefing", toast: null }); } },
     selectNode: (nodeId) => set({ selectedNodeId: nodeId }),
     restore: () => {
       const restored = application.restoreIncident();
-      if (restored) { const scenario = getScenario(scenarioRegistry, restored.scenarioId) ?? defaultScenario; set({ incident: restored, scenario, screen: restored.status === "resolved" || restored.status === "failed" ? "report" : "incident" }); }
+      if (restored) { const scenario = getScenario(scenarioRegistry, restored.scenarioId) ?? defaultScenario; set({ incident: restored, scenario, hasSavedIncident: true, screen: "landing" }); }
     },
   }));
 }

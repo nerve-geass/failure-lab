@@ -42,6 +42,7 @@ export type DerivedIncidentState = {
 
 export type ScenarioDefinition = {
   id: string;
+  seed?: number;
   title: string;
   summary: string;
   nodes: Record<string, SystemNode>;

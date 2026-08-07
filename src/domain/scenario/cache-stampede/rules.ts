@@ -4,6 +4,7 @@ import { calculateCacheStampedeOutcome } from "./calculateOutcome";
 import { deriveCacheStampedeMetrics } from "./deriveMetrics";
 import { deriveCacheStampedeNodeStatuses } from "./deriveNodeStatuses";
 import { deriveCacheStampedeTimelineEvents } from "./deriveTimelineEvents";
+import { defaultRuntime, type CacheStampedeRuntime } from "./data";
 
 const flagByAction: Partial<Record<string, string>> = {
   "inspect-cache-metrics": "cacheMetricsInspected",
@@ -21,16 +22,16 @@ const hypothesesByAction: Partial<Record<string, string>> = {
   "inspect-database-metrics": "Database load is absorbing the misses",
 };
 
-export function resolveCacheStampedeAction(state: IncidentState, action: IncidentAction): ScenarioActionEffect {
+export function resolveCacheStampedeAction(state: IncidentState, action: IncidentAction, runtime: CacheStampedeRuntime = defaultRuntime): ScenarioActionEffect {
   const flag = flagByAction[action.id];
   const flags = flag ? { [flag]: true } : {};
   const hypothesis = hypothesesByAction[action.id];
   const next = { ...state, flags: { ...state.flags, ...flags } };
-  return { flags, hypotheses: hypothesis ? [hypothesis] : [], events: deriveCacheStampedeTimelineEvents({ ...next, metrics: deriveCacheStampedeMetrics(next) }, action), message: action.consequence };
+  return { flags, hypotheses: hypothesis ? [hypothesis] : [], events: deriveCacheStampedeTimelineEvents({ ...next, metrics: deriveCacheStampedeMetrics(next, runtime) }, action), message: action.consequence };
 }
 
-export function deriveCacheStampedeState(state: IncidentState): DerivedIncidentState {
-  const metrics = deriveCacheStampedeMetrics(state);
+export function deriveCacheStampedeState(state: IncidentState, runtime: CacheStampedeRuntime = defaultRuntime): DerivedIncidentState {
+  const metrics = deriveCacheStampedeMetrics(state, runtime);
   return { metrics, nodeStatuses: deriveCacheStampedeNodeStatuses({ ...state, metrics }) };
 }
 
