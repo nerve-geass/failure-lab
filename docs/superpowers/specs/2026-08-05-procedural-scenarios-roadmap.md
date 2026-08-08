@@ -49,7 +49,23 @@ Every generated scenario must be checked before publication:
 
 ## Blackbox mode
 
-Blackbox exercises should be a separate interaction policy over a simulated local system. The player sees only allowed inputs, outputs, logs, and side effects. Advanced scenarios use soft prerequisites: actions are always tentable, but uninformed actions cost time/points or worsen the simulated system.
+Blackbox exercises should be a separate interaction policy over a simulated local system. The player sees only allowed inputs, outputs, signals, and side effects. Logs are one optional signal surface, not the foundation of the contract. The internal simulation remains deeper than the UI projection: dashboards, service consoles, endpoint responses, traces, and alerts can all expose different views of the same hidden state.
+
+The implemented observation contract is:
+
+```text
+hidden simulation state
+        ↓
+observation policy
+        ↓
+typed signals and surfaces
+        ↓
+player actions and observable consequences
+```
+
+Observation policies control visible surfaces, hint revelation, feedback fidelity, and whether tentative actions remain available. This allows beginner experiences to present curated dashboards while advanced and Blackbox experiences expose less-processed evidence without changing the underlying infrastructure model.
+
+The first local target is a deterministic checkout dependency simulation. It is accessed through the explicit development entry point `?mode=blackbox`; it is not yet part of the catalog or random exercise flow.
 
 Future hacking exercises must remain sandboxed and deterministic: no real network targets, credentials, or executable exploit payloads. They can teach reconnaissance, hypothesis testing, abuse cases, and threat modeling through a controlled state machine.
 

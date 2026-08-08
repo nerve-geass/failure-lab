@@ -10,6 +10,7 @@ const callbacks = {
   onResume: vi.fn(),
   onAbandon: vi.fn(),
   onSelectScenario: vi.fn(),
+  onSelectBlackbox: vi.fn(),
 };
 
 function props(incident: IncidentState, hasSavedIncident = true) {
