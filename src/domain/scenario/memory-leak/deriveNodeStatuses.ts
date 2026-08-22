@@ -1,0 +1,4 @@
+import type { IncidentState, NodeStatus } from "@/domain/incident/types";
+import { nodeIds } from "./data";
+import { deriveMemoryLeakMetrics } from "./deriveMetrics";
+export function deriveMemoryLeakNodeStatuses(state: IncidentState): Record<string, NodeStatus> { const m = deriveMemoryLeakMetrics(state); const critical = m.heapUsed.value > 92; return { [nodeIds.webCheckout]: critical ? "critical" : m.errorRate.value > 3 ? "warning" : "healthy", [nodeIds.checkoutApi]: critical ? "critical" : "warning", [nodeIds.workerPool]: critical ? "critical" : state.flags.workersRestarted ? "recovering" : "warning", [nodeIds.heap]: critical ? "critical" : m.heapUsed.value > 75 ? "warning" : "recovering", [nodeIds.cache]: state.flags.cacheLimited ? "recovering" : "critical", [nodeIds.database]: "healthy", [nodeIds.telemetry]: state.flags.memoryInspected ? "healthy" : "warning" }; }

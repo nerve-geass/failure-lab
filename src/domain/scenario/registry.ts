@@ -2,6 +2,7 @@ import type { ScenarioDefinition } from "./types";
 import { cacheStampedeDefinition } from "./cache-stampede/definition";
 import { connectionPoolExhaustionDefinition } from "./connection-pool-exhaustion/definition";
 import { badDeploymentDefinition } from "./bad-deployment/definition";
+import { memoryLeakDefinition } from "./memory-leak/definition";
 import { queueConsumerLagDefinition } from "./queue-consumer-lag/definition";
 import { retryStormDefinition } from "./retry-storm/definition";
 
@@ -13,6 +14,7 @@ export const scenarioRegistry: ScenarioRegistry = {
   [queueConsumerLagDefinition.id]: queueConsumerLagDefinition,
   [connectionPoolExhaustionDefinition.id]: connectionPoolExhaustionDefinition,
   [badDeploymentDefinition.id]: badDeploymentDefinition,
+  [memoryLeakDefinition.id]: memoryLeakDefinition,
 };
 
 export function getScenario(registry: ScenarioRegistry, id: string): ScenarioDefinition | undefined {

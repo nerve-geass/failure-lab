@@ -1,0 +1,3 @@
+import type { IncidentState, OutcomeId } from "@/domain/incident/types";
+import { metricIds as ids } from "./data";
+export function calculateMemoryLeakOutcome(state: IncidentState): OutcomeId | undefined { if (state.flags.trafficShed) return "emergency-containment"; if (state.metrics[ids.heapUsed].value >= 100 || state.metrics[ids.errorRate].value >= 10) return "major-outage"; if (state.flags.cacheLimited && state.currentMinute >= 5 && state.metrics[ids.heapGrowthRate].value < 1) return "excellent-containment"; if (state.flags.workersRestarted || state.flags.memoryIncreased) return "partial-recovery"; return undefined; }

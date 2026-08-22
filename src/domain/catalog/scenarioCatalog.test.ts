@@ -18,7 +18,7 @@ describe("learning scenario catalog", () => {
   });
 
   it("marks only implemented scenarios as available", () => {
-    expect(scenarioCatalog.filter((scenario) => scenario.status === "available").map((scenario) => scenario.id)).toEqual(["retry-storm", "cache-stampede", "queue-consumer-lag", "connection-pool-exhaustion", "bad-deployment"]);
-    expect(scenarioCatalog.filter((scenario) => scenario.status === "planned")).toHaveLength(5);
+    expect(scenarioCatalog.filter((scenario) => scenario.status === "available").map((scenario) => scenario.id)).toEqual(["retry-storm", "cache-stampede", "queue-consumer-lag", "connection-pool-exhaustion", "memory-leak", "bad-deployment"]);
+    expect(scenarioCatalog.filter((scenario) => scenario.status === "planned")).toHaveLength(4);
   });
 });

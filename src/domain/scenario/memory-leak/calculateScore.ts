@@ -1,0 +1,2 @@
+import type { IncidentState } from "@/domain/incident/types";
+export function calculateMemoryLeakScore(state: IncidentState): number { let score = 0; if (state.flags.memoryInspected) score += 20; if (state.flags.profileInspected) score += 20; if (state.flags.cacheLimited) score += 40; if (!state.flags.trafficShed) score += 10; if (state.flags.workersRestarted) score -= 10; if (state.flags.memoryIncreased && !state.flags.cacheLimited) score -= 20; return Math.max(0, Math.min(100, score)); }

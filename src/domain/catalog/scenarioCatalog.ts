@@ -50,10 +50,10 @@ export const scenarioCatalog: ScenarioCatalogEntry[] = [
     title: "Memory Leak",
     order: 5,
     difficulty: "Intermediate",
-    status: "planned",
+    status: "available",
     summary: "A gradual heap growth pattern turns normal traffic into repeated restarts and lost work.",
     estimatedMinutes: 10,
-    prerequisites: ["connection-pool-exhaustion"],
+    prerequisites: ["bad-deployment"],
     concepts: ["heap", "garbage collection", "profiling", "restart strategy"],
   },
   {

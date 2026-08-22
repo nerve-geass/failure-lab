@@ -37,4 +37,6 @@ test("a completed exercise remains reviewable from the catalog", async ({ page }
   await expect(page.getByRole("button", { name: "Review report" })).toBeVisible();
   await page.getByRole("button", { name: "Review report" }).click();
   await expect(page.getByText("INCIDENT AUTOPSY")).toBeVisible();
+  await page.getByRole("button", { name: "Back to catalog" }).click();
+  await expect(page.getByRole("heading", { name: "Train your instincts. Learn from failure." })).toBeVisible();
 });
