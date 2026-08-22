@@ -61,10 +61,10 @@ export const scenarioCatalog: ScenarioCatalogEntry[] = [
     title: "Bad Deployment",
     order: 6,
     difficulty: "Intermediate",
-    status: "planned",
+    status: "available",
     summary: "A release introduces failures for only part of the traffic, making rollback ambiguous.",
     estimatedMinutes: 11,
-    prerequisites: ["memory-leak"],
+    prerequisites: ["connection-pool-exhaustion"],
     concepts: ["canary release", "rollback", "feature flags", "blast radius"],
   },
   {

@@ -39,7 +39,7 @@ describe("scenario registry", () => {
 
   it("exposes the application registry object", () => {
     expect(scenarioRegistry).toBeDefined();
-    expect(listScenarios(scenarioRegistry).map((scenario) => scenario.id)).toEqual(["retry-storm", "cache-stampede", "queue-consumer-lag", "connection-pool-exhaustion"]);
+    expect(listScenarios(scenarioRegistry).map((scenario) => scenario.id)).toEqual(["retry-storm", "cache-stampede", "queue-consumer-lag", "connection-pool-exhaustion", "bad-deployment"]);
   });
 
   it("keeps scenario narrative content with the definition", () => {

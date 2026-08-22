@@ -1,0 +1,2 @@
+import type { IncidentState } from "@/domain/incident/types";
+export function calculateBadDeploymentScore(state: IncidentState): number { let score = 0; if (state.flags.deploymentInspected) score += 20; if (state.flags.sliceInspected) score += 20; if (state.flags.featureDisabled) score += 35; if (state.flags.exposureReduced) score += 25; if (state.flags.schemaChecked) score += 10; if (state.flags.rollbackApplied && !state.flags.schemaChecked) score -= 35; if (!state.flags.deploymentInspected) score -= 15; return Math.max(0, Math.min(100, score)); }
