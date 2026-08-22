@@ -1,0 +1,4 @@
+import { render, screen } from "@testing-library/react";
+import { describe, expect, it, vi } from "vitest";
+import { BlackboxBriefing } from "./BlackboxBriefing";
+describe("Blackbox briefing", () => { it("explains observable local investigation without hidden cause", () => { render(<BlackboxBriefing hasSavedSession={false} onStart={vi.fn()} onResume={vi.fn()} onBack={vi.fn()} />); expect(screen.getByRole("heading", { name: /checkout blackbox/i })).toBeVisible(); expect(screen.getByText(/signals, interfaces, and consequences/i)).toBeVisible(); expect(screen.queryByText(/hidden cause|database saturation/i)).not.toBeInTheDocument(); }); it("offers resume for saved sessions", () => { render(<BlackboxBriefing hasSavedSession onStart={vi.fn()} onResume={vi.fn()} onBack={vi.fn()} />); expect(screen.getByRole("button", { name: "Resume Blackbox" })).toBeVisible(); }); });

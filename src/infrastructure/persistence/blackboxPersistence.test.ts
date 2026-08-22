@@ -1,0 +1,5 @@
+import { describe, expect, it } from "vitest";
+import { createBlackboxPersistence, type BlackboxSnapshot } from "./blackboxPersistence";
+const snapshot: BlackboxSnapshot = { version: 1, seed: 42, difficulty: "intermediate", actionSequence: ["probe-checkout"] };
+const memoryStorage = (): Storage => { const values = new Map<string, string>(); return { getItem: (key) => values.get(key) ?? null, setItem: (key, value) => { values.set(key, value); }, removeItem: (key) => { values.delete(key); }, clear: () => { values.clear(); }, key: (index) => Array.from(values.keys())[index] ?? null, length: values.size }; };
+describe("blackbox persistence", () => { it("stores public deterministic replay data", () => { const adapter = createBlackboxPersistence(memoryStorage()); adapter.save(snapshot); expect(adapter.load()).toEqual(snapshot); expect(JSON.stringify(adapter.load())).not.toContain("hiddenCause"); }); it("clears the Blackbox snapshot", () => { const adapter = createBlackboxPersistence(memoryStorage()); adapter.save(snapshot); adapter.clear(); expect(adapter.load()).toBeNull(); }); });
